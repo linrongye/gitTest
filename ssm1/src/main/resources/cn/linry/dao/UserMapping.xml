@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linry.dao.UserDao">
+    <select id="findUser" resultType="cn.linry.domain.User">
+      select * from user
+    </select>
+    <update id="updateUser" parameterType="cn.linry.domain.User">
+        update orders set money=#{money} where id=#{id}
+    </update>
+    <select id="getMoneyById" parameterType="int" resultType="int">
+        select money from orders where id=#{0}
+    </select>
+    <delete id="deleteUser" parameterType="int">
+        delete from user where id=#{0}
+    </delete>
+    <insert id="addUser" parameterType="cn.linry.domain.User"  useGeneratedKeys="true" keyProperty="id">
+      insert into user values (null,#{username},#{birthday},#{sex},#{address},#{test})
+
+    </insert>
+</mapper>

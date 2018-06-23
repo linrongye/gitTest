@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="dataSourceTransactionManager">
+        <property name="dataSource"  ref="dataSource"></property>
+    </bean>
+    <tx:advice transaction-manager="dataSourceTransactionManager" id="transactionInterceptor">
+        <tx:attributes>
+            <tx:method name="*User" read-only="false" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <aop:pointcut id="t1" expression="execution(* service.impl..*.*(..))"></aop:pointcut>
+        <aop:advisor advice-ref="transactionInterceptor" pointcut-ref="t1"></aop:advisor>
+    </aop:config>
+</beans>

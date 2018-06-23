@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Mybatis.dao.UserDao">
+<!--    <select id="add"  parameterType="Mybatis.dao.UserDao"  >
+        select * from user where
+    </select>-->
+    <sql id="userandorders">
+        select u.username,u.sex,o.createtime,o.number,o.note from user u left  join orders o   on o.user_id=u.id
+    </sql>
+
+    <insert id="add" parameterType="Mybatis.dao.UserDao" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into user(username,birthday,sex,address)  values(#{username},#{birthday},#{sex},#{address})
+    </insert>
+    <select id="findAll"  resultType="Mybatis.domain.User">
+        select * from user;
+    </select>
+
+    <select id="findBy" resultType="user">
+        select * from user where username like #{0} and sex=#{1}
+
+    </select>
+    <select id="countUser" resultType="_byte">
+        select test from user where id=1
+    </select>
+
+    <select id="query" parameterType="int[]" resultType="user">
+        select * from user where id in (
+            <foreach collection="array" separator="," item="id">
+              #{id}
+            </foreach>
+        )
+
+    </select>
+
+   <!-- <select id="queryOrdersAndUsers" resultType="orders">
+        select u.username,u.sex,o.createtime,o.number,o.note   from orders o left join user u on o.user_id=u.id
+
+    </select>-->
+
+    <resultMap id="ordersAndUsers" type="orders">
+       <!-- <id column="user_id" property="user_id"/>-->
+        <result column="createtime" property="createtime"/>
+        <result column="number" property="number"></result>
+        <result column="note" property="note"></result>
+        <association property="user" javaType="user">
+           <!-- <id column="id" property="id"/>-->
+            <result column="username" property="username" />
+            <result column="sex" property="sex" />
+        </association>
+    </resultMap>
+    <select id="queryOrdersAndUsers" resultMap="ordersAndUsers">
+        <include refid="userandorders"/>
+    </select>
+
+
+    <resultMap id="UsersAndOrders" type="user">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="sex" property="sex"/>
+        <collection property="orderList" javaType="list" ofType="orders">
+            <id column="id" property="id" />
+            <result property="createtime" column="createtime"/>
+            <result property="number" column="number"/>
+            <result property="note" column="note"/>
+        </collection>
+
+    </resultMap>
+    <select id="queryUsersAndOrders" resultMap="UsersAndOrders">
+      <include refid="userandorders"/>
+    </select>
+
+    <select id="queryByoption"  resultType="user">
+        select * from user where
+          <foreach collection="map.keys" index="key" item="key" separator="and" >
+              ${key}=${map[key]}
+          </foreach>
+
+    </select>
+
+</mapper>

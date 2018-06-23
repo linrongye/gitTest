@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="UserDao" class="cn.aop.dao.Impl.UserDaoImpl"></bean>
+    <bean id="addUserService" class="cn.aop.service.Impl.addUserServiceImpl">
+        <property name="userDao" ref="UserDao"></property>
+    </bean>
+    <bean id="logger" class="cn.aop.aop.LogAop"></bean>
+
+    <aop:config proxy-target-class="false">
+        <aop:pointcut id="pc" expression="execution(* cn.aop.service..*.*(..))"></aop:pointcut>
+        <aop:aspect ref="logger">
+          <!--  <aop:before method="log" pointcut-ref="pc"></aop:before>-->
+            <aop:around method="log" pointcut-ref="pc"></aop:around>
+        </aop:aspect>
+    </aop:config>
+</beans>

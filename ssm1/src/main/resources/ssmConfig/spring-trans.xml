@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="dataSourceTransactionManager">
+        <property name="dataSource" ref="datasource"></property>
+    </bean>
+    <tx:advice id="advice" transaction-manager="dataSourceTransactionManager">
+        <tx:attributes>
+            <tx:method name="*User" propagation="REQUIRED" read-only="false"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="pt1" expression="execution(* cn.linry.service..*.*(..))"></aop:pointcut>
+        <aop:advisor advice-ref="advice" pointcut-ref="pt1"></aop:advisor>
+    </aop:config>
+</beans>
